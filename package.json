@@ -51,5 +51,13 @@
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bertli486/dsh-sync-updater.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Bertli486/dsh-sync-updater/issues"
+  },
+  "homepage": "https://github.com/Bertli486/dsh-sync-updater#readme"
 }

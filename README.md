@@ -136,7 +136,7 @@ node --test        # 10 个用例：semver、扫描、来源判定、git pull、
 这个包以 bundle 形式挂进 profile（和普通第三方 DSH 插件一样），不需要先发布到 npm：
 
 ```bash
-git clone https://github.com/<you>/dsh-sync-updater.git ~/dsh-sync-updater
+git clone https://github.com/Bertli486/dsh-sync-updater.git ~/dsh-sync-updater
 cd ~/.dsh/profiles/desktop
 pnpm add link:$HOME/dsh-sync-updater
 ```
