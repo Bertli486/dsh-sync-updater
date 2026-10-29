@@ -12,6 +12,38 @@ DSH 本身没有后台更新器：插件管理器只响应显式操作，技能�
 2. **三个模型工具** —— `sync_status` / `sync_check` / `sync_apply`，用一句话让 agent 去查/去更新
 3. **后台定时检查** —— 间隔和开关都能在面板里实时改，不用改配置、不用重启
 
+## 安装
+
+```sh
+dsh plugin --profile web add github:Bertli486/dsh-sync-updater
+```
+
+`web` 换成宿主实际的 profile 名；DSH Desktop 也可以在「设置 → 插件」里装。重启后左侧栏出现「同步」入口，同时获得 `sync_status` / `sync_check` / `sync_apply` 三个工具。
+
+手动挂进 profile 也可以（以 `link:` 方式，改代码即时生效，适合开发）：
+
+```bash
+git clone https://github.com/Bertli486/dsh-sync-updater.git ~/dsh-sync-updater
+cd ~/.dsh/profiles/desktop && pnpm add link:$HOME/dsh-sync-updater
+```
+
+再把 `dsh-sync-updater` 加进 profile `package.json` 的 `dsh.profile.bundles`：
+
+```json
+{
+  "dsh": { "profile": { "bundles": ["@deepseek-ai/dsh-base", "@deepseek-ai/dsh-web-app", "dsh-sync-updater"] } }
+}
+```
+
+> 桌面版 PATH 里通常没有 pnpm，可以用 DSH 自带的那份：
+> `~/.dsh/dsh-runtimes/*/dependencies/pnpm` + 同目录下的 `node`。
+
+调试时可以直接对宿主路由发请求：
+
+```bash
+curl -s http://127.0.0.1:<port>/sync-updater/api/state | jq .
+```
+
 ## 侧栏面板
 
 重启 DSH 后，左侧栏会出现一个「同步」入口（图标在插件列表下方），点开是：
@@ -130,42 +162,6 @@ node --test        # 10 个用例：semver、扫描、来源判定、git pull、
 - 发现页依赖 skills.sh 的**未文档化**搜索接口（网页内部用）；它一变就只剩报错，不影响更新功能
 - 通过发现页装的技能直接落在 `~/.agents/skills`，没有进 skillshare 的源目录；skillshare `sync` 不会删除它，但也不会同步到 codex 等 target
 - 桌面版 PATH 里通常没有 pnpm，插件会自动找 `~/.dsh/dsh-runtimes/*/dependencies/pnpm`
-
-## 安装到 DSH
-
-这个包以 bundle 形式挂进 profile（和普通第三方 DSH 插件一样），不需要先发布到 npm：
-
-```bash
-git clone https://github.com/Bertli486/dsh-sync-updater.git ~/dsh-sync-updater
-cd ~/.dsh/profiles/desktop
-pnpm add link:$HOME/dsh-sync-updater
-```
-
-然后把包名加进 profile `package.json` 的 `dsh.profile.bundles`：
-
-```json
-{
-  "dsh": { "profile": { "bundles": ["@deepseek-ai/dsh-base", "@deepseek-ai/dsh-web-app", "dsh-sync-updater"] } }
-}
-```
-
-重启 DSH，左侧栏出现「同步」入口，同时获得 `sync_status` / `sync_check` / `sync_apply` 三个工具。
-
-> 桌面版 PATH 里通常没有 pnpm，可以用 DSH 自带的那份：
-> `~/.dsh/dsh-runtimes/*/dependencies/pnpm` + 同目录下的 `node`。
-
-## 开发
-
-```bash
-node --test        # 10 个用例：semver、扫描、来源判定、git pull、HTTP 路由、工具注册
-```
-
-改了 `lib/index.js` 或 `lib/client.js` 要重启 DSH 才生效 —— HMR 只热重载配置，不重载模块根。
-调试时也可以直接对宿主路由发请求：
-
-```bash
-curl -s http://127.0.0.1:<port>/sync-updater/api/state | jq .
-```
 
 ## 许可
 
