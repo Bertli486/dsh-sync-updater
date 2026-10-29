@@ -147,6 +147,18 @@ curl -s http://127.0.0.1:<port>/sync-updater/api/state | jq .
 - 插件安装失败回滚 manifest 与 lockfile
 - 外部命令一律数组传参，不经过 shell
 
+## 发版清单
+
+市场条目指向 `releases/latest/download/dsh-sync-updater.tgz`，这个 URL 只解析 `latest`，文件名照字面取——所以每次发版都必须把资产名保持为 **`dsh-sync-updater.tgz`**（不带版本号），否则下个 release 一发布，市场里的下载链接就会静默 404。
+
+```bash
+# 1. 升版本号并提交
+# 2. 打 tag 并推送：git tag -a v0.2.0 -m v0.2.0 && git push origin v0.2.0
+# 3. 在 Release 页面附加 dsh-sync-updater.tgz（打包 lib/、cordis.patch.yml、README、LICENSE、package.json，顶层目录名 package/）
+```
+
+npm 包是可选的：发了 npm 可以省掉安装时的构建授权提示，不发也不影响被收录。
+
 ## 开发
 
 ```bash
