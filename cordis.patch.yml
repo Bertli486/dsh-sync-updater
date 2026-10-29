@@ -1,0 +1,22 @@
+# dsh-sync-updater 的 bundle patch —— 把「技能/插件同步更新器」挂进 DSH 配置树。
+#
+# 这一层只插一行：id 是 sync-updater，模块名解析到本包入口 lib/index.js。
+# 下面的 config 会原样传给 apply(ctx, config)；改这里即可调整行为。
+- insert:
+    - id: sync-updater
+      name: 'dsh-sync-updater'
+      config:
+        # 自动检查间隔（分钟）。0 = 关闭后台检查。
+        autoCheckIntervalMinutes: 360
+        # 检查到技能有更新时是否自动应用（插件永远不自动升级）。
+        autoApplySkills: false
+        # 是否把「项目内」技能根（<cwd>/.dsh/skills、<cwd>/.agents/skills）算进清单。
+        includeProjectSkills: true
+        # 是否把用户级技能根（~/.dsh/skills、~/.agents/skills）算进清单。
+        includeUserSkills: true
+        # npm registry；留空则用 https://registry.npmjs.org。
+        registry: ''
+        # 外部命令；留空使用内置探测。
+        pnpmCommand: ''
+        gitCommand: ''
+        skillshareCommand: ''
